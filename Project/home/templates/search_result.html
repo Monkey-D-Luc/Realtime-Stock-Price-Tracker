@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stock Result</title>
+</head>
+<body>
+    <h1>Stock Result</h1>
+    {% if stock_info %}
+        <h2>Symbol: {{ stock_info.T }}</h2>
+        <p>Open: {{ stock_info.o }}</p>
+        <p>Close: {{ stock_info.c }}</p>
+        <p>High: {{ stock_info.h }}</p>
+        <p>Low: {{ stock_info.l }}</p>
+        <p>Volume: {{ stock_info.v }}</p>
+    {% else %}
+        <p>No data found for the symbol.</p>
+    {% endif %}
+    <a href="{% url 'search_stock' %}">Search Again</a>
+</body>
+</html>
