@@ -15,7 +15,7 @@ def search_stock(request):
         if 'results' in data:
             stock_info = next((stock for stock in data['results'] if stock['T'] == symbol), None)
         else:
-            stock_info = None  # Hoặc xử lý lỗi tùy trường hợp
+            stock_info = None  
         
         return render(request, 'search_result.html', {'stock_info': stock_info})
     
