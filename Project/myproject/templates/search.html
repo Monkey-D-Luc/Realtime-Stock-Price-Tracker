@@ -2,15 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Search Stock</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Symbol Search</title>
 </head>
 <body>
-    <h1>Search Stock</h1>
-    <form method="POST">
-        {% csrf_token %}
-        <label for="symbol">Enter Stock Symbol:</label>
-        <input type="text" id="symbol" name="symbol" required>
-        <button type="submit">Search</button>
-    </form>
+    <div class="search-container">
+        <h1>Search Stock Symbol</h1>
+        <form method="GET" action="">
+            <input type="text" name="symbol" placeholder="Enter stock symbol..." value="{{ symbol }}">
+            <button type="submit">Search</button>
+        </form>
+
+        <div class="result">
+            {% if results %}
+                <h3>Search Results:</h3>
+                <ul>
+                    {% for match in results %}
+                        <li>
+                            <strong>Symbol:</strong> {{ match.1_symbol }}<br>
+                            <strong>Name:</strong> {{ match.2_name }}<br>
+                            <strong>Region:</strong> {{ match.4_region }}<br>
+                            <strong>Currency:</strong> {{ match.8_currency }}<br>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% elif error %}
+                <p>{{ error }}</p>
+            {% endif %}
+        </div>
+    </div>
 </body>
 </html>
