@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Details - {{ company.Symbol }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .details {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .details p {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .back-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Company Details: {{ company.Name }}</h1>
+    <div class="details">
+        <p><strong>Symbol:</strong> {{ company.Symbol }}</p>
+        <p><strong>Name:</strong> {{ company.Name }}</p>
+        <p><strong>Industry:</strong> {{ company.Industry }}</p>
+        <p><strong>Market Capitalization:</strong> {{ company.MarketCapitalization }}</p>
+        <p><strong>Description:</strong> {{ company.Description }}</p>
+        <p><strong>Country:</strong> {{ company.Country }}</p>
+        <p><strong>Currency:</strong> {{ company.Currency }}</p>
+    </div>
+
+    <a href="/" class="back-btn">Back to Search</a>
+</body>
+</html>

@@ -19,10 +19,12 @@
                 <ul>
                     {% for match in results %}
                         <li>
-                            <strong>Symbol:</strong> {{ match.1_symbol }}<br>
-                            <strong>Name:</strong> {{ match.2_name }}<br>
-                            <strong>Region:</strong> {{ match.4_region }}<br>
-                            <strong>Currency:</strong> {{ match.8_currency }}<br>
+                            <div class="stock-item" data-symbol="{{ match.1_symbol }}">
+                                <strong>Symbol:</strong> {{ match.1_symbol }}<br>
+                                <strong>Name:</strong> {{ match.2_name }}<br>
+                                <strong>Region:</strong> {{ match.4_region }}<br>
+                                <strong>Currency:</strong> {{ match.8_currency }}<br>
+                            </div>
                         </li>
                     {% endfor %}
                 </ul>
@@ -31,5 +33,20 @@
             {% endif %}
         </div>
     </div>
+    <script>
+        // Tìm tất cả các phần tử kết quả
+        const stockItems = document.querySelectorAll('.stock-item');
+    
+        // Lặp qua từng phần tử và thêm sự kiện click
+        stockItems.forEach(item => {
+            item.addEventListener('click', function() {
+                // Lấy symbol từ thuộc tính data-symbol
+                const symbol = item.getAttribute('data-symbol');
+    
+                // Điều hướng đến URL chi tiết của công ty
+                window.location.href = `/${symbol}`;
+            });
+        });
+    </script>
 </body>
 </html>

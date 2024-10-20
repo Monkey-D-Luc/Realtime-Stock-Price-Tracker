@@ -1,9 +1,7 @@
 
 from django.shortcuts import render
 import requests
-
-API_KEY = 'po3cEYFATFj3Qm0POhPDK_E1scpkwFnC'
-
+api_key = '39Y4RULMSAX9T0LI'
 def stock(request):
     if request.method == 'POST':
         symbol = request.POST.get('symbol')
@@ -25,23 +23,18 @@ def stock(request):
 def search(request):
     if request.method == 'GET':
         symbol = request.GET.get('symbol')
-        api_key = '39Y4RULMSAX9T0LI'  # API key của bạn
-        
         if symbol:
             url = f"https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords={symbol}&apikey={api_key}"
             response = requests.get(url)
             data = response.json()
-
             results = []
             if "bestMatches" in data:
                 for match in data['bestMatches']:
                     # Chuyển đổi và ghi đè trực tiếp
                     for key in list(match.keys()):
                         new_key = key.replace('.', '_').replace(' ','')
-                        match[new_key] = match.pop(key)  # Ghi đè bằng cách đổi tên key
-                    
+                        match[new_key] = match.pop(key)  # Ghi đè bằng cách đổi tên key        
                     results.append(match)
-
                 context = {
                     'results': results,
                     'symbol': symbol
@@ -58,3 +51,12 @@ def search(request):
 
         return render(request, 'search.html', context)
 
+def stock_detail(request, symbol): 
+    url = f"https://www.alphavantage.co/query?function=OVERVIEW&symbol={symbol}&apikey={api_key} "
+    response = requests.get(url)
+    data = response.json()
+
+    context = {
+        'company': data
+    }
+    return render(request, 'stock_detail.html', context)

@@ -1,9 +1,9 @@
 
 from django.contrib import admin
 from django.urls import path
-from .views import stock
-from .views import search
+from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', search, name='search'),
+    path('', views.search, name='search'),
+    path('<str:symbol>/', views.stock_detail, name='stock_detail'),
 ]
