@@ -3,50 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Symbol Search</title>
+    <title>Stock Search</title>
 </head>
 <body>
-    <div class="search-container">
-        <h1>Search Stock Symbol</h1>
-        <form method="GET" action="">
-            <input type="text" name="symbol" placeholder="Enter stock symbol..." value="{{ symbol }}">
-            <button type="submit">Search</button>
-        </form>
+    <h1>Stock Information Search</h1>
+    
+    <!-- Form Search -->
+    <form action="{% url 'search' %}" method="GET">
+        <label for="symbol">Enter Stock Symbol:</label>
+        <input type="text" id="symbol" name="symbol" required>
+        <button type="submit">Search</button>
+    </form>
 
-        <div class="result">
-            {% if results %}
-                <h3>Search Results:</h3>
-                <ul>
-                    {% for match in results %}
-                        <li>
-                            <div class="stock-item" data-symbol="{{ match.1_symbol }}">
-                                <strong>Symbol:</strong> {{ match.1_symbol }}<br>
-                                <strong>Name:</strong> {{ match.2_name }}<br>
-                                <strong>Region:</strong> {{ match.4_region }}<br>
-                                <strong>Currency:</strong> {{ match.8_currency }}<br>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% elif error %}
-                <p>{{ error }}</p>
+    <!-- Kết quả tìm kiếm -->
+    <div id="result">
+        {% if stock %}
+            <h2>Company: {{ stock.longName }} ({{ stock.symbol }})</h2>
+            <p>Market Cap: {{ stock.marketCap }}</p>
+            <p>Sector: {{ stock.sector }}</p>
+            <p>Industry: {{ stock.industry }}</p>
+
+            <!-- Thông tin tài chính -->
+            {% if financials %}
+                <h3>Financial Data</h3>
+                <p>Current Price: {{ financials.currentPrice }}</p>
+                <p>Recommendation: {{ financials.recommendationKey }}</p>
+                <p>Profit Margins: {{ financials.profitMargins }}</p>
             {% endif %}
-        </div>
+
+            <!-- Thông tin phân tích -->
+            {% if analysis %}
+                <h3>Analysis</h3>
+                <p>Analyst Target Price: {{ analysis.targetMeanPrice }}</p>
+                <p>Number of Analysts: {{ analysis.numberOfAnalystOpinions }}</p>
+            {% endif %}
+
+            <!-- Thống kê chính -->
+            {% if key_stats %}
+                <h3>Key Statistics</h3>
+                <p>PEG Ratio: {{ key_stats.pegRatio }}</p>
+                <p>Price to Book Ratio: {{ key_stats.priceToBook }}</p>
+            {% endif %}
+
+        {% elif error %}
+            <p>{{ error }}</p>
+        {% endif %}
     </div>
-    <script>
-        // Tìm tất cả các phần tử kết quả
-        const stockItems = document.querySelectorAll('.stock-item');
-    
-        // Lặp qua từng phần tử và thêm sự kiện click
-        stockItems.forEach(item => {
-            item.addEventListener('click', function() {
-                // Lấy symbol từ thuộc tính data-symbol
-                const symbol = item.getAttribute('data-symbol');
-    
-                // Điều hướng đến URL chi tiết của công ty
-                window.location.href = `/${symbol}`;
-            });
-        });
-    </script>
 </body>
 </html>
