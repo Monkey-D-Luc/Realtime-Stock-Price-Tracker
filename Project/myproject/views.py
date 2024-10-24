@@ -1,9 +1,9 @@
 from yahooquery import Ticker
 
-symbols = 'CDTTW'
+symbols = 'fax'
 
 tickers = Ticker(symbols)
 
 # Retrieve each company's profile information
-data = tickers.asset_profile
+data = tickers.quote_type
 print(data)
