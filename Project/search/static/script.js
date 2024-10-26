@@ -9,7 +9,7 @@ document.getElementById('search-box').addEventListener('input', function() {
                 searchResults.innerHTML = '';
                 data.forEach(stock => {
                     const div = document.createElement('div');
-                    div.textContent = `${stock.Symbol} - ${stock.Tên}`;
+                    div.textContent = `${stock.Ticker} - ${stock.Name}`;
                     div.addEventListener('click', () => {
                         alert(`Selected stock: ${stock.Symbol}`);
                     });
