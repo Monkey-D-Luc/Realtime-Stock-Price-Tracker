@@ -1,17 +1,18 @@
 document.getElementById('search-box').addEventListener('input', function() {
     const query = this.value;
     const searchResults = document.getElementById('search-results');
-
     if (query.length > 0) {
-        fetch(`/search/?q=${query}`)
+        fetch(`/search/?q=${encodeURIComponent(query)}`) 
             .then(response => response.json())
             .then(data => {
                 searchResults.innerHTML = '';
                 data.forEach(stock => {
                     const div = document.createElement('div');
                     div.textContent = `${stock.Ticker} - ${stock.Name}`;
+                    div.classList.add('stock-item'); 
+                    div.dataset.symbol = stock.Ticker; 
                     div.addEventListener('click', () => {
-                        alert(`Selected stock: ${stock.Symbol}`);
+                        fetchStockDetail(stock.Ticker); 
                     });
                     searchResults.appendChild(div);
                 });
@@ -25,3 +26,36 @@ document.getElementById('search-box').addEventListener('input', function() {
         searchResults.style.display = 'none';
     }
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('search-results').addEventListener('click', function (event) {
+        if (event.target && event.target.classList.contains('stock-item')) {
+            const symbol = event.target.dataset.symbol; 
+            fetchStockDetail(symbol);
+            setInterval(() => fetchStockDetail(symbol), 60000); 
+        }
+    });
+});
+
+function fetchStockDetail(symbol) {
+    fetch(`/${symbol}/`) 
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                displayStockDetail(data);
+            }
+        })
+        .catch(error => {
+            console.error('Lỗi khi lấy thông tin chi tiết:', error);
+        });
+}
+
+function displayStockDetail(data) {
+    const detailContainer = document.getElementById('stock-detail');
+    detailContainer.innerHTML = `
+        <h2>${data.name || 'Unknown Company'}</h2>
+        <p><strong>Giá close gần nhất:</strong> ${data.close || 'N/A'}</p>
+    `;
+}
