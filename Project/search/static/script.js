@@ -28,11 +28,17 @@ document.getElementById('search-box').addEventListener('input', function() {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
+    const path = window.location.pathname;
+    const symbol = path.substring(1); 
+    if (symbol) {
+        fetchStockDetail(symbol); 
+    }
     document.getElementById('search-results').addEventListener('click', function (event) {
         if (event.target && event.target.classList.contains('stock-item')) {
             const symbol = event.target.dataset.symbol; 
             fetchStockDetail(symbol);
-            setInterval(() => fetchStockDetail(symbol), 60000); 
+            window.location.href = `/${symbol}/`;
+            setInterval(() => fetchStockDetail(symbol), 60000); // Cập nhật thông tin mỗi phút
         }
     });
 });
@@ -56,6 +62,8 @@ function displayStockDetail(data) {
     const detailContainer = document.getElementById('stock-detail');
     detailContainer.innerHTML = `
         <h2>${data.name || 'Unknown Company'}</h2>
-        <p><strong>Giá close gần nhất:</strong> ${data.close || 'N/A'}</p>
+        <p><strong>Giá đóng cửa gần nhất:</strong> ${data.close || 'N/A'}</p>
+        <p><strong>Mã cổ phiếu:</strong> ${data.symbol}</p>
     `;
+
 }
