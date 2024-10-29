@@ -1,27 +1,44 @@
+<!-- templates/search_detail.html -->
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Search</title>
+
+{% block title %}Stock Search{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    <input type="text" id="search-box" placeholder="Search for stocks...">
+    <div id="search-results"></div>
     <link rel="stylesheet" href="{% static 'style.css' %}">
-    
-</head>
-<body>
-    <div class="search-container">
-        <input type="text" id="search-box" placeholder="Search for stocks...">
-        <div id="search-results">
-        </div>
-    </div>
-    <main id="stock-detail">
-        <h2 id="company-name">{{ name }}</h2> 
-        <p><strong>Giá đóng cửa gần nhất:</strong> <span id="close-price">{{ close }}</span></p>
-        <p3>At close: 4:00 PM EDT</p3>
-        <p><strong>Mã cổ phiếu:</strong> <span id="stock-symbol">{{ symbol }}</span></p>
-        <p><strong>Thông tin:</strong> <span >{{ profile }}</span></p>
-        <a href="/" class="btn">Return</a>  
-    </main>
-    <script src="{% static 'script.js' %}"></script>
-</body>
-</html>
+</div>
+
+<main id="stock-detail">
+    <h2 id="company-name">{{ name }}</h2> 
+    <p><strong>Giá đóng cửa gần nhất:</strong> <span id="close-price">{{ close }}</span></p>
+    <p>At close: 4:00 PM EDT</p>
+    <p><strong>Mã cổ phiếu:</strong> <span id="stock-symbol">{{ symbol }}</span></p>
+    <p><strong>Thông tin:</strong> <span>{{ profile }}</span></p>
+    <a href="/" class="btn">Return</a>  
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'script.js' %}"></script>
+<script>
+    document.getElementById('search-box').addEventListener('input', function() {
+        let query = this.value;
+        if (query.length > 2) {
+            fetch(`/search_api?query=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    let resultsContainer = document.getElementById('search-results');
+                    resultsContainer.innerHTML = '';
+                    data.results.forEach(stock => {
+                        let item = document.createElement('div');
+                        item.textContent = stock.name + ' (' + stock.symbol + ')';
+                        resultsContainer.appendChild(item);
+                    });
+                });
+        }
+    });
+</script>
+{% endblock %}
