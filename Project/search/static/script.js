@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const symbol = event.target.dataset.symbol; 
             fetchStockDetail(symbol);
             setInterval(() => fetchStockDetail(symbol), 60000);
-            window.location.href = `/${symbol}/`;
+            window.location.href = `/Profile/${symbol}/`;
         }
     });
 });
