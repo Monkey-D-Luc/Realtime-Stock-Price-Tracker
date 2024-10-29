@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -15,14 +14,15 @@
     </style>
 </head>
 <body>
-    <div class="sidebar">  
-        <a href="/profile" class="{% if request.path == '/profile' %}active{% endif %}">Profile</a>  
-        <a href="/chart" class="{% if request.path == '/chart' %}active{% endif %}">Chart</a>  
-        <a href="/historical-data" class="{% if request.path == '/historical-data' %}active{% endif %}">Historical Data</a>  
-        <a href="/analysis" class="{% if request.path == '/analysis' %}active{% endif %}">Analysis</a>  
+    <div class="sidebar">
+        <a href="/{{ symbol }}/profile" class="{% if request.path == '/'|add:symbol|add:'/profile' %}active{% endif %}">Profile</a>
+        <a href="/{{ symbol }}/chart" class="{% if request.path == '/'|add:symbol|add:'/chart' %}active{% endif %}">Chart</a>
+        <a href="/{{ symbol }}/historical-data" class="{% if request.path == '/'|add:symbol|add:'/historical-data' %}active{% endif %}">Historical Data</a>
+        <a href="/{{ symbol }}/analysis" class="{% if request.path == '/'|add:symbol|add:'/analysis' %}active{% endif %}">Analysis</a>
     </div>
     <div class="content">
         {% block content %}{% endblock %}
     </div>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

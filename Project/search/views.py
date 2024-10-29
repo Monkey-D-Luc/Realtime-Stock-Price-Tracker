@@ -6,8 +6,8 @@ import pandas as pd
 import os
 excel_path = os.path.join(settings.DATA_DIR,'TickerName.xlsx')
 df = pd.read_excel(excel_path)
-def index(request):
-    return render(request, 'index.html')
+def menu(request):
+    return render(request, 'menu.html')
 def get_stock_name(symbol):
     row = df[df['Ticker'] == symbol]
     return row['Name'].values[0] if not row.empty else None
@@ -20,7 +20,7 @@ def search_stock(request):
         result = []
     return JsonResponse(result, safe=False)
 
-def stock_detail(request, symbol):
+def stock_profile(request, symbol):
     stock = Ticker(symbol)
     data = stock.history(period="1d", interval="1m").tail(1)
     profile = stock.summary_profile.get(symbol)
@@ -36,5 +36,5 @@ def stock_detail(request, symbol):
     else:
         name = "N/A"  
     close_price = data["close"].values[0]
-    return render(request, 'stock.html', {'name': name, 'close': close_price, 'symbol': symbol, 'profile':description})
+    return render(request, 'profile.html', {'name': name, 'close': close_price, 'symbol': symbol, 'profile':description})
 

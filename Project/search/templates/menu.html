@@ -1,0 +1,17 @@
+<!-- templates/search_detail.html -->
+{% extends "sidebar.html" %}
+{% load static %}
+
+{% block title %}Stock Search{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    <input type="text" id="search-box" placeholder="Search for stocks...">
+    <div id="search-results"></div>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'script.js' %}"></script>
+{% endblock %}

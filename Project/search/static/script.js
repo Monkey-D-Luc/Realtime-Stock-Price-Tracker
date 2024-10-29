@@ -29,9 +29,10 @@ document.getElementById('search-box').addEventListener('input', function() {
 
 document.addEventListener('DOMContentLoaded', function () {
     const path = window.location.pathname;
-    const symbol = path.substring(1); 
+    const symbol = path.split('/')[1]; 
     if (symbol) {
-        fetchStockDetail(symbol); 
+        fetchStockDetail(symbol);
+        setInterval(() => fetchStockDetail(symbol), 60000); 
     }
     document.getElementById('search-results').addEventListener('click', function (event) {
         if (event.target && event.target.classList.contains('stock-item')) {
@@ -44,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function fetchStockDetail(symbol) {
-    fetch(`/${symbol}`) 
+    fetch(`/${symbol}/profile`) 
         .then(response => response.json())
         .then(data => {
             if (data.error) {
@@ -59,7 +60,9 @@ function fetchStockDetail(symbol) {
 }
 
 function displayStockDetail(data) {
+    const detailContainer = document.getElementById('stock-detail');
     document.getElementById('company-name').textContent = data.name || 'Unknown Company'; 
     document.getElementById('close-price').textContent = data.close || 'N/A'; 
     document.getElementById('stock-symbol').textContent = data.symbol; 
+    detailContainer.style.display = 'block';
 }
