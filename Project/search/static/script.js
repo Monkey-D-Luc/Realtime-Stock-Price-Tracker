@@ -37,14 +37,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if (event.target && event.target.classList.contains('stock-item')) {
             const symbol = event.target.dataset.symbol; 
             fetchStockDetail(symbol);
+            setInterval(() => fetchStockDetail(symbol), 60000);
             window.location.href = `/${symbol}/`;
-            setInterval(() => fetchStockDetail(symbol), 60000); // Cập nhật thông tin mỗi phút
         }
     });
 });
 
 function fetchStockDetail(symbol) {
-    fetch(`/${symbol}/`) 
+    fetch(`/${symbol}`) 
         .then(response => response.json())
         .then(data => {
             if (data.error) {
@@ -59,11 +59,7 @@ function fetchStockDetail(symbol) {
 }
 
 function displayStockDetail(data) {
-    const detailContainer = document.getElementById('stock-detail');
-    detailContainer.innerHTML = `
-        <h2>${data.name || 'Unknown Company'}</h2>
-        <p><strong>Giá đóng cửa gần nhất:</strong> ${data.close || 'N/A'}</p>
-        <p><strong>Mã cổ phiếu:</strong> ${data.symbol}</p>
-    `;
-
+    document.getElementById('company-name').textContent = data.name || 'Unknown Company'; 
+    document.getElementById('close-price').textContent = data.close || 'N/A'; 
+    document.getElementById('stock-symbol').textContent = data.symbol; 
 }

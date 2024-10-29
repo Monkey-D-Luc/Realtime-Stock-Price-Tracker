@@ -23,6 +23,7 @@ def search_stock(request):
 def stock_detail(request, symbol):
     stock = Ticker(symbol)
     data = stock.history(period="1d", interval="1m").tail(1)
+    profile =stock.summary_profile[symbol]["longBusinessSummary"]
     if data.empty:
         return JsonResponse({'error': 'Không tìm thấy thông tin'}, status=404)
     name_row = df[df['Ticker'] == symbol]
@@ -31,5 +32,5 @@ def stock_detail(request, symbol):
     else:
         name = "N/A"  
     close_price = data["close"].values[0]
-    return render(request, 'stock.html', {'name': name, 'close': close_price, 'symbol': symbol})
+    return render(request, 'stock.html', {'name': name, 'close': close_price, 'symbol': symbol, 'profile':profile})
 

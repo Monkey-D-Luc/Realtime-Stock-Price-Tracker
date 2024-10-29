@@ -1,26 +1,26 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi Tiết Cổ Phiếu - {{ name }}</title>
-    <link rel="stylesheet" href="{% static 'styles.css' %}">  
+    <title>Stock Search</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    
 </head>
 <body>
     <div class="search-container">
-        <input type="text" id="search-box" placeholder="Tìm kiếm cổ phiếu...">
-        <div id="search-results"></div>
+        <input type="text" id="search-box" placeholder="Search for stocks...">
+        <div id="search-results">
+        </div>
     </div>
-    <header>
-        <h1>Thông Tin Cổ Phiếu</h1>
-    </header>
     <main id="stock-detail">
-        <h2>{{ name }}</h2>
+        <h2 id="company-name">{{ name }}</h2> 
         <p><strong>Giá đóng cửa gần nhất:</strong> <span id="close-price">{{ close }}</span></p>
         <p><strong>Mã cổ phiếu:</strong> <span id="stock-symbol">{{ symbol }}</span></p>
-        <a href="/" class="btn">Quay lại</a>  
+        <p><strong>Thông tin:</strong> <span >{{ profile }}</span></p>
+        <a href="/" class="btn">Return</a>  
     </main>
-    <script src="{% static 'script.js' %}"></script>  
+    <script src="{% static 'script.js' %}"></script>
 </body>
 </html>
