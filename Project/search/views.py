@@ -38,20 +38,3 @@ def stock_profile(request, symbol):
     close_price = data["close"].values[0]
     return render(request, 'profile.html', {'name': name, 'close': close_price, 'symbol': symbol, 'profile':description})
 
-def historical(request, symbol):
-    stock = Ticker(symbol)
-    data = stock.history(period="1mo", interval="1d")
-    if data.empty:
-        return JsonResponse({'error': 'Không tìm thấy thông tin'}, status=404)
-    data.reset_index(inplace=True)  # Đặt lại index để dễ dàng truy cập cột 'date'
-    name_row = df[df['Ticker'] == symbol]
-    if not name_row.empty:
-        name = name_row['Name'].values[0]
-    else:
-        name = "N/A"
-    history_data = data[['date', 'open', 'high', 'low', 'close', 'volume']].to_dict(orient='records')
-    return render(request, 'history.html', {
-        'name': name,
-        'symbol': symbol,
-        'history_data': history_data
-    })
