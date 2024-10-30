@@ -1,10 +1,11 @@
 from django.test import TestCase
 from yahooquery import Ticker
-
-# Khởi tạo cổ phiếu với ký hiệu (symbol) bạn muốn
-symbol = "TSLA"  # thay "AAPL" bằng mã cổ phiếu của bạn
+import pandas as pd
+symbol = "TSLA" 
 ticker = Ticker(symbol)
-
-# Lấy dữ liệu giá cổ phiếu trong 1 phút gần nhất
 data = ticker.history(interval="1m", period="1d")
-print(data)
+df = pd.DataFrame(data)
+df.reset_index(inplace=True)
+df['date'] = pd.to_datetime(df['date'])
+df['hour'] = df['date'].dt.strftime('%H:%M')
+print(df)

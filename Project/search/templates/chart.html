@@ -1,0 +1,64 @@
+
+{% extends "sidebar.html" %}
+{% load static %}
+{% block title %}Stock{% endblock %}
+
+    {% block content %}
+    <div class="search-container">
+        <input type="text" id="search-box" placeholder="Search for stocks...">
+        <div id="search-results"></div>
+        <link rel="stylesheet" href="{% static 'style.css' %}">
+    </div>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Stock Price Chart</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link rel="stylesheet" href="{% static 'chart.css' %}">
+    </head>
+        <h2>Biểu đồ Stock {{ symbol }}</h2>
+        <div id="chartContainer">
+            <canvas id="stockChart"></canvas>
+        </div>
+
+    <script>
+            const timestamps = JSON.parse('{{ timestamps | safe }}');
+            const closePrices = JSON.parse('{{ close_prices | safe }}');
+            const ctx = document.getElementById('stockChart').getContext('2d');
+            const stockChart = new Chart(ctx, {
+                type: 'line',  
+                data: {
+                    labels: timestamps,
+                    datasets: [{
+                        label: 'Giá đóng cửa',
+                        data: closePrices,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: false,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true, 
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Time'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Close (USD)'
+                            },
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+    </script>
+    {% endblock %}
+    {% block extra_js %}
+        <script src="{% static 'script.js' %}"></script>
+    {% endblock %}

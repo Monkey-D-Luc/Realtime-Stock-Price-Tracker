@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.conf import settings
 from yahooquery import Ticker
+import json
 import pandas as pd
 import os
 excel_path = os.path.join(settings.DATA_DIR,'TickerName.xlsx')
@@ -43,7 +44,7 @@ def historical(request, symbol):
     data = stock.history(period="1mo", interval="1d")
     if data.empty:
         return JsonResponse({'error': 'Không tìm thấy thông tin'}, status=404)
-    data.reset_index(inplace=True)  # Đặt lại index để dễ dàng truy cập cột 'date'
+    data.reset_index(inplace=True)  
     name_row = df[df['Ticker'] == symbol]
     if not name_row.empty:
         name = name_row['Name'].values[0]
@@ -55,3 +56,20 @@ def historical(request, symbol):
         'symbol': symbol,
         'history_data': history_data
     })
+def chart_view(request, symbol):
+    stock = Ticker(symbol)
+    data = stock.history(period="1d", interval="1m")
+    if data.empty:
+        return render(request, 'chart.html', {'error': 'Không tìm thấy dữ liệu'})
+    df = pd.DataFrame(data)
+    df.reset_index(inplace=True)
+    df['date'] = pd.to_datetime(df['date'])
+    df['hour'] = df['date'].dt.strftime('%H:%M')
+    close_prices = data["close"].tolist()
+    hour= df['hour'].tolist()
+    context = {
+        'symbol': symbol,
+        'timestamps': json.dumps(hour),
+        'close_prices': json.dumps(close_prices),
+    }
+    return render(request, 'chart.html', context)
