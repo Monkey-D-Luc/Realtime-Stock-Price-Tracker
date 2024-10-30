@@ -26,4 +26,13 @@ document.getElementById('search-box').addEventListener('input', function() {
         searchResults.style.display = 'none';
     }
 });
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('search-results').addEventListener('click', function (event) {
+        if (event.target && event.target.classList.contains('stock-item')) {
+            const symbol = event.target.dataset.symbol; 
+            window.location.href = `/${symbol}/profile/`;
+        }
+    });
+});
+
 
