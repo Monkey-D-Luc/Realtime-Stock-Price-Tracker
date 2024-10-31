@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -10,7 +11,9 @@
         .sidebar a:hover { background-color: #d0e0f0; }
         .active { background-color: #a0c0e0; }
         .content { margin-left: 220px; padding: 20px; }
+        .search-container { margin-bottom: 20px; }
     </style>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
     <div class="sidebar">
@@ -20,8 +23,18 @@
         <a href="/{{ symbol }}/analysis" class="{% if request.path == '/'|add:symbol|add:'/analysis' %}active{% endif %}">Analysis</a>
     </div>
     <div class="content">
+        <div class="search-container">
+            <input type="text" id="search-box" placeholder="Search for stocks...">
+            <div id="search-results"></div>
+        </div>
+        <h1>{{ name }} ({{ symbol }})</h1>
+        <main id="stock-detail">
+            <p><strong>Giá đóng cửa gần nhất:</strong> <span id="close-price">{{ close }}</span></p>
+            <p>At close: 4:00 PM EDT</p>
+            <p><strong>Mã cổ phiếu:</strong> <span id="stock-symbol">{{ symbol }}</span></p>
+        </main>
         {% block content %}{% endblock %}
     </div>
-    {% block extra_js %}{% endblock %}
+    {% block extra_js %}<script src="{% static 'script.js' %}"></script>{% endblock %}
 </body>
 </html>

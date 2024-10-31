@@ -4,14 +4,7 @@
 {% block title %}Stock Search{% endblock %}
 
 {% block content %}
-<div class="search-container">
-    <input type="text" id="search-box" placeholder="Search for stocks...">
-    <div id="search-results"></div>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-</div>
 <body>
-    <h1>{{ name }} ({{ symbol }})</h1>
-
     <h2>History</h2>
     <table border="1">
         <thead>
@@ -40,6 +33,3 @@
 </body>
 {% endblock %}
 
-{% block extra_js %}
-<script src="{% static 'script.js' %}"></script>
-{% endblock %}
