@@ -12,6 +12,21 @@
         .active { background-color: #a0c0e0; }
         .content { margin-left: 220px; padding: 20px; }
         .search-container { margin-bottom: 20px; }
+        .price-change { font-size: 24px; font-weight: bold; }
+        .positive { color: green; }
+        .negative { color: red; }
+        #close-price.highlight {
+            font-size: 1.6em;
+            font-weight: bold;
+        }
+        .price-change .small-text {
+            font-size: 0.8em;
+            display: inline;
+            vertical-align: middle;
+        }
+        .note{
+            font-size:0.75em;
+        }
     </style>
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
@@ -29,9 +44,15 @@
         </div>
         <h1>{{ name }} ({{ symbol }})</h1>
         <main id="stock-detail">
-            <p><strong>Giá đóng cửa gần nhất:</strong> <span id="close-price">{{ close }}</span></p>
-            <p>At close: 4:00 PM EDT</p>
-            <p><strong>Mã cổ phiếu:</strong> <span id="stock-symbol">{{ symbol }}</span></p>
+            <p>
+                <strong>Lastest Close Price</strong> 
+                <span id="close-price" class="highlight">{{ close }}</span>
+                <span class="price-change {% if compare < 0 %}negative{% else %}positive{% endif %}">
+                    <span class="small-text">{{ compare }} ({{ percent }}%)</span>
+                </span>
+            </p>
+            <p class="note">At close: 4:00 PM EDT</p>
+            <p><strong>Symbol:</strong> <span id="stock-symbol">{{ symbol }}</span></p>
         </main>
         {% block content %}{% endblock %}
     </div>
