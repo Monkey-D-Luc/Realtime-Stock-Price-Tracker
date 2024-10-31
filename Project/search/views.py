@@ -25,22 +25,25 @@ def search_stock(request):
 
 def get_stock_data(symbol):
     stock = Ticker(symbol)
-    data = stock.history(period="1d", interval="1m").tail(1)
     profile = stock.summary_profile.get(symbol, {})
     description = profile.get("longBusinessSummary", "N/A")
-    mdata = stock.history(interval="1d", period="1mo")
+    data = stock.history(interval="1d", period="1mo")
+    data = data.reset_index() 
+    mdata = pd.DataFrame(data)
+    mdata['date'] = mdata['date'].astype(str)
+    mdata = mdata[mdata['date'].str.len() <= 10]
+    mdata['date'] = pd.to_datetime(mdata['date'])
+    mdata['date'] = mdata['date'].dt.strftime('%d-%m-%Y')
     mdata = mdata.sort_values(by='date', ascending=False)
     compare = (mdata["close"].values[0]- mdata["close"].values[1]).round(2)
     percent= ((compare/mdata["close"].values[0].round(2))*100).round(2)
-    if data.empty:
-        return None, "Không tìm thấy thông tin", None, None
     name_row = df[df['Ticker'] == symbol]
     name = name_row['Name'].values[0] if not name_row.empty else "N/A"
-    close_price = data["close"].values[0].round(2)
-    return name, close_price, symbol, description,compare,percent
+    close_price = mdata["close"].values[0].round(2)
+    return name, close_price, symbol, description,compare,percent,mdata
 
 def stock_profile(request, symbol):
-    name, close_price, symbol, description,compare,percent = get_stock_data(symbol)
+    name, close_price, symbol, description,compare,percent,_ = get_stock_data(symbol)
     if name is None:
         return JsonResponse({'error': 'Không tìm thấy thông tin'}, status=404)
     return render(request, 'profile.html', {
@@ -53,15 +56,9 @@ def stock_profile(request, symbol):
     })
     
 def historical(request, symbol):
-    stock = Ticker(symbol)
-    data = stock.history(period="1mo", interval="1d")
-    if data.empty:
-        return JsonResponse({'error': 'Không tìm thấy thông tin'}, status=404)
-    data.reset_index(inplace=True)  
-    data = data.sort_values(by='date', ascending=False)
-    data[['open', 'high', 'low', 'close']] = data[['open', 'high', 'low', 'close']].round(2)
-    name, close_price, symbol, _,compare,percent = get_stock_data(symbol)
-    history_data = data[['date', 'open', 'high', 'low', 'close', 'volume']].to_dict(orient='records')
+    name, close_price, symbol, _,compare,percent,mdata = get_stock_data(symbol)
+    mdata[['open', 'high', 'low', 'close']] = mdata[['open', 'high', 'low', 'close']].round(2)
+    history_data = mdata[['date', 'open', 'high', 'low', 'close', 'volume']].to_dict(orient='records')
     return render(request, 'history.html', {
         'name': name,
         'symbol': symbol,
@@ -82,7 +79,7 @@ def chart_view(request, symbol):
     daf['hour'] = daf['date'].dt.strftime('%H:%M')
     close_list = data["close"].tolist()
     hour = daf['hour'].tolist()
-    name, close_price, symbol, _,compare,percent = get_stock_data(symbol)
+    name, close_price, symbol, _,compare,percent,_ = get_stock_data(symbol)
     context = {
         'name': name,
         'symbol': symbol,
