@@ -19,36 +19,62 @@
 <script>
     const timestamps = JSON.parse('{{ timestamps | safe }}');
     const closePrices = JSON.parse('{{ close_prices | safe }}');
+    const volume = JSON.parse('{{ volume | safe }}'); 
+
     const ctx = document.getElementById('stockChart').getContext('2d');
     const stockChart = new Chart(ctx, {
-        type: 'line',
         data: {
             labels: timestamps,
-            datasets: [{
-                label: 'Giá đóng cửa',
-                data: closePrices,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                fill: false,
-                borderWidth: 1
-            }]
+            datasets: [
+                {
+                    type: 'line',  
+                    label: 'Giá đóng cửa',
+                    data: closePrices,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: false,
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                },
+                {
+                    type: 'bar',  
+                    label: 'Khối lượng giao dịch',
+                    data: volume,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    yAxisID: 'y1'  
+                }
+            ]
         },
         options: {
-            responsive: true, 
+            responsive: true,
             scales: {
                 x: {
                     title: {
                         display: true,
-                        text: 'Time'
+                        text: 'Thời gian'
                     }
                 },
                 y: {
                     title: {
                         display: true,
-                        text: 'Close (USD)'
+                        text: 'Giá Đóng (USD)'
                     },
                     beginAtZero: false,
                     position: 'right',
+                },
+                y1: { 
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: 'Khối lượng'
+                    },
+                    beginAtZero: true,
+                    suggestedMax: Math.max(...volume) * 1.2, 
+                    ticks: {
+                        stepSize: Math.max(...volume) / 5},
                 }
             },
             plugins: {
@@ -65,13 +91,15 @@
                     },
                     limits: {
                         y: {min: Math.min(...closePrices), max: Math.max(...closePrices)},
-                        x: {min: 0, max:timestamps.length }
+                        x: {min: 0, max: timestamps.length},
+                        y1: {min: 0, max: Math.max(...volume) * 1.2}, 
                     },
                 }
             }
         }
     });
 </script>
+
 
 {% endblock %}
 {% block extra_js %}

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.conf import settings
+from django.core.cache import cache
 from yahooquery import Ticker
 import json
 import pandas as pd
@@ -24,6 +25,11 @@ def search_stock(request):
     return JsonResponse(result, safe=False)
 
 def get_stock_data(symbol):
+    cache_key = f"stock_data_{symbol}"
+    cached_data = cache.get(cache_key)
+    if cached_data:
+        return cached_data
+    
     stock = Ticker(symbol)
     profile = stock.summary_profile.get(symbol, {})
     description = profile.get("longBusinessSummary", "N/A")
@@ -40,7 +46,9 @@ def get_stock_data(symbol):
     name_row = df[df['Ticker'] == symbol]
     name = name_row['Name'].values[0] if not name_row.empty else "N/A"
     close_price = mdata["close"].values[0].round(2)
-    return name, close_price, symbol, description,compare,percent,mdata
+    result = (name, close_price, symbol, description, compare, percent, mdata)
+    cache.set(cache_key, result, 3600)
+    return result
 
 def stock_profile(request, symbol):
     name, close_price, symbol, description,compare,percent,_ = get_stock_data(symbol)
@@ -77,7 +85,11 @@ def chart_view(request, symbol):
     daf.reset_index(inplace=True)
     daf['date'] = pd.to_datetime(daf['date'])
     daf['hour'] = daf['date'].dt.strftime('%H:%M')
-    close_list = data["close"].tolist()
+    close_list = daf["close"].tolist()
+    open_list=  daf['open'].tolist()
+    high_list=daf['high'].tolist()
+    low_list=daf['low'].to_list()
+    volume= daf['volume'].tolist()
     hour = daf['hour'].tolist()
     name, close_price, symbol, _,compare,percent,_ = get_stock_data(symbol)
     context = {
@@ -88,5 +100,9 @@ def chart_view(request, symbol):
         'close_prices': json.dumps(close_list),
         'compare':compare,
         'percent':percent,
+        'low_prices': json.dumps(low_list),
+        'open_prices': json.dumps(open_list),
+        'high_prices': json.dumps(high_list),
+        'volume': json.dumps(volume),
     }
     return render(request, 'chart.html', context)
