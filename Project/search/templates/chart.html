@@ -1,58 +1,79 @@
-
 {% extends "sidebar.html" %}
 {% load static %}
 {% block title %}Stock{% endblock %}
 
-    {% block content %}
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Stock Price Chart</title>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <link rel="stylesheet" href="{% static 'chart.css' %}">
-    </head>
-        <div id="chartContainer">
-            <canvas id="stockChart"></canvas>
-        </div>
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Price Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js" integrity="sha512-UXumZrZNiOwnTcZSHLOfcTs0aos2MzBWHXOHOuB0J/R44QB0dwY5JgfbvljXcklVf65Gc4El6RjZ+lnwd2az2g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-zoom/2.0.1/chartjs-plugin-zoom.min.js" integrity="sha512-wUYbRPLV5zs6IqvWd88HIqZU/b8TBx+I8LEioQ/UC0t5EMCLApqhIAnUg7EsAzdbhhdgW07TqYDdH3QEXRcPOQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="{% static 'chart.css' %}">
+</head>
+<div id="chartContainer">
+    <canvas id="stockChart"></canvas>
+</div>
 
-    <script>
-            const timestamps = JSON.parse('{{ timestamps | safe }}');
-            const closePrices = JSON.parse('{{ close_prices | safe }}');
-            const ctx = document.getElementById('stockChart').getContext('2d');
-            const stockChart = new Chart(ctx, {
-                type: 'line',  
-                data: {
-                    labels: timestamps,
-                    datasets: [{
-                        label: 'Giá đóng cửa',
-                        data: closePrices,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        fill: false,
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true, 
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Time'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Close (USD)'
-                            },
-                            beginAtZero: false
-                        }
+<script>
+    const timestamps = JSON.parse('{{ timestamps | safe }}');
+    const closePrices = JSON.parse('{{ close_prices | safe }}');
+    const ctx = document.getElementById('stockChart').getContext('2d');
+    const stockChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: timestamps,
+            datasets: [{
+                label: 'Giá đóng cửa',
+                data: closePrices,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                fill: false,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true, 
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Time'
                     }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Close (USD)'
+                    },
+                    beginAtZero: false,
+                    position: 'right',
                 }
-            });
-    </script>
-    {% endblock %}
-    {% block extra_js %}
-        <script src="{% static 'script.js' %}"></script>
-    {% endblock %}
+            },
+            plugins: {
+                zoom: { 
+                    pan: {
+                        enabled: true,
+                        mode: 'xy',
+                    },
+                    zoom: {
+                        wheel: {
+                            enabled: true,
+                        },
+                        mode: 'xy',
+                    },
+                    limits: {
+                        y: {min: Math.min(...closePrices), max: Math.max(...closePrices)},
+                        x: {min: 0, max:timestamps.length }
+                    },
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'script.js' %}"></script>
+{% endblock %}
