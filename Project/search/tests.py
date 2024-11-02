@@ -1,7 +1,7 @@
 import pandas as pd
 from yahooquery import Ticker
 
-symbol = "TSLA"
+symbol = "LGHT"
 ticker = Ticker(symbol)
 data = ticker.history(interval="1d", period="1mo")
 data = data.reset_index()

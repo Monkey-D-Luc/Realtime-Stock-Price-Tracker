@@ -39,8 +39,8 @@ def get_stock_data(symbol):
     mdata['date'] = mdata['date'].astype(str)
     mdata = mdata[mdata['date'].str.len() <= 10]
     mdata['date'] = pd.to_datetime(mdata['date'])
-    mdata['date'] = mdata['date'].dt.strftime('%d-%m-%Y')
     mdata = mdata.sort_values(by='date', ascending=False)
+    mdata['date'] = mdata['date'].dt.strftime('%d-%m-%Y')
     compare = (mdata["close"].values[0]- mdata["close"].values[1]).round(2)
     percent= ((compare/mdata["close"].values[0].round(2))*100).round(2)
     name_row = df[df['Ticker'] == symbol]
@@ -97,12 +97,12 @@ def chart_view(request, symbol):
         'symbol': symbol,
         'close': close_price,
         'timestamps': json.dumps(hour),
-        'close_prices': json.dumps(close_list),
         'compare':compare,
         'percent':percent,
         'low_prices': json.dumps(low_list),
         'open_prices': json.dumps(open_list),
         'high_prices': json.dumps(high_list),
         'volume': json.dumps(volume),
+        'close_prices': json.dumps(close_list),
     }
     return render(request, 'chart.html', context)
