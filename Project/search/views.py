@@ -32,7 +32,18 @@ def get_stock_data(symbol):
     
     stock = Ticker(symbol)
     profile = stock.summary_profile.get(symbol, {})
-    description = profile.get("longBusinessSummary", "N/A")
+    profile_details = [
+        profile.get("longBusinessSummary", "N/A"),
+        profile.get("address1", "N/A"),
+        profile.get("city", "N/A"),
+        profile.get("country", "N/A"),
+        profile.get("phone", "N/A"),
+        profile.get("website", "N/A"),
+        profile.get("industry", "N/A"),
+        profile.get("sector", "N/A"),
+        profile.get("fullTimeEmployees", "N/A")
+    ]
+    
     data = stock.history(interval="1d", period="1mo")
     data = data.reset_index() 
     mdata = pd.DataFrame(data)
@@ -46,19 +57,27 @@ def get_stock_data(symbol):
     name_row = df[df['Ticker'] == symbol]
     name = name_row['Name'].values[0] if not name_row.empty else "N/A"
     close_price = mdata["close"].values[0].round(2)
-    result = (name, close_price, symbol, description, compare, percent, mdata)
+    result = (name, close_price, symbol, profile_details, compare, percent, mdata)
     cache.set(cache_key, result, 3600)
     return result
 
 def stock_profile(request, symbol):
-    name, close_price, symbol, description,compare,percent,_ = get_stock_data(symbol)
+    name, close_price, symbol, profile_details,compare,percent,_ = get_stock_data(symbol)
     if name is None:
         return JsonResponse({'error': 'Không tìm thấy thông tin'}, status=404)
     return render(request, 'profile.html', {
         'name': name,
         'close': close_price,
         'symbol': symbol,
-        'profile': description,
+        'profile': profile_details[0],
+        'address': profile_details[1],
+        'city': profile_details[2],
+        'country': profile_details[3],
+        'phone': profile_details[4],
+        'website': profile_details[5],
+        'industry': profile_details[6],
+        'sector': profile_details[7],
+        'employees': profile_details[8],
         'compare':compare,
         'percent':percent
     })

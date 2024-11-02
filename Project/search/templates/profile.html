@@ -5,7 +5,21 @@
 
 {% block content %}
 <main id="stock-detail">
-    <p><strong>Description:</strong> <span>{{ profile }}</span></p>
+    <div class="container">
+        <aside class="left-column">
+            <p><strong>Address:</strong> {{ address }}</p>
+            <p><strong>City:</strong> {{ city }}</p>
+            <p><strong>Country:</strong> {{ country }}</p>
+            <p><strong>Phone:</strong> {{ phone }}</p>
+            <p><strong>Website:</strong> <a href="{{ website }}" target="_blank">{{ website }}</a></p>
+            <p><strong>Sector:</strong> {{ sector }}</p>
+            <p><strong>Industry:</strong> {{ industry }}</p>
+            <p><strong>Employees:</strong> {{ employees }}</p>
+        </aside>
+        <section class="main-profile">
+            <p><strong>Description:</strong> <span>{{ profile }}</span></p>
+        </section>
+    </div>
 </main>
 {% endblock %}
 
