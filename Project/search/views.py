@@ -6,6 +6,7 @@ from yahooquery import Ticker
 import json
 import pandas as pd
 import os
+from datetime import datetime
 excel_path = os.path.join(settings.DATA_DIR,'TickerName.xlsx')
 df = pd.read_excel(excel_path)
 def menu(request):
@@ -82,18 +83,48 @@ def stock_profile(request, symbol):
         'percent':percent
     })
     
+def get_monthly_data(stock, year, month):
+    start_date = f"{year}-{month:02d}-01"
+    if month == 12:
+        end_date = f"{year + 1}-01-01"
+    else:
+        end_date = f"{year}-{month + 1:02d}-01"
+    
+    data = stock.history(start=start_date, end=end_date, interval="1d")
+    if isinstance(data, pd.DataFrame):
+        data = data.reset_index()
+        data['date'] = pd.to_datetime(data['date'])
+        data = data[(data['date'].dt.year == year) & (data['date'].dt.month == month)]
+        return data[['date', 'open', 'high', 'low', 'close', 'volume']].round(2).to_dict(orient='records')
+    return []
+
 def historical(request, symbol):
-    name, close_price, symbol, _,compare,percent,mdata = get_stock_data(symbol)
+    name, close_price, symbol, _, compare, percent, mdata = get_stock_data(symbol)
     mdata[['open', 'high', 'low', 'close']] = mdata[['open', 'high', 'low', 'close']].round(2)
-    history_data = mdata[['date', 'open', 'high', 'low', 'close', 'volume']].to_dict(orient='records')
+    current_history_data = mdata[['date', 'open', 'high', 'low', 'close', 'volume']].to_dict(orient='records')
+    selected_month = int(request.GET.get('month', datetime.now().month))
+    selected_year = int(request.GET.get('year', datetime.now().year))
+    stock = Ticker(symbol)
+    if selected_month == datetime.now().month and selected_year == datetime.now().year:
+        history_data = current_history_data
+    else:
+        history_data = get_monthly_data(stock, selected_year, selected_month)
+
+    year_range = range(2020, datetime.now().year + 1)
+    month_range = range(1, 13) 
     return render(request, 'history.html', {
         'name': name,
         'symbol': symbol,
         'history_data': history_data,
         'close': close_price,
-        'compare':compare,
-        'percent':percent
+        'compare': compare,
+        'percent': percent,
+        'selected_month': selected_month,
+        'selected_year': selected_year,
+        'year_range': year_range,
+        'month_range': month_range, 
     })
+
     
 def chart_view(request, symbol):
     stock = Ticker(symbol)

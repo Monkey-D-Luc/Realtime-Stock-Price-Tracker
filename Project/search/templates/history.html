@@ -1,11 +1,30 @@
 {% extends "sidebar.html" %}
 {% load static %}
 
-{% block title %}Stock Search{% endblock %}
+{% block title %}Stock History{% endblock %}
 
 {% block content %}
 <body>
-    <h2>History</h2>
+    <h2>Stock History for {{ name }} ({{ symbol }})</h2>
+    
+    <form method="GET" action="{% url 'historical_data' symbol=symbol %}">
+        <label for="month">Month:</label>
+        <select id="month" name="month">
+            {% for m in month_range %}
+            <option value="{{ m }}" {% if m == selected_month %}selected{% endif %}>{{ m }}</option>
+            {% endfor %}
+        </select>
+        
+        <label for="year">Year:</label>
+        <select id="year" name="year">
+            {% for y in year_range %}
+            <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
+            {% endfor %}
+        </select>
+        
+        <button type="submit">Refresh</button>
+    </form>
+    
     <table border="1">
         <thead>
             <tr>
@@ -32,4 +51,3 @@
     </table>
 </body>
 {% endblock %}
-
