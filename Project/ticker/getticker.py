@@ -10,5 +10,3 @@ if response.status_code == 200:
     df = pd.DataFrame(tickers, columns=["Ticker"])
     df.to_excel("tickers.xlsx", index=False)
     print("Danh sách mã ticker đã được lưu vào file tickers.xlsx")
-else:
-    print(f"Yêu cầu không thành công: {response.status_code} - {response.text}")
