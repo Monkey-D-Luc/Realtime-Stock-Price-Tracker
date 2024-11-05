@@ -5,12 +5,41 @@
 {% block content %}
 <div class="search-container">
     <input type="text" id="search-box" placeholder="Search for stocks...">
-    <button id="search-button">Tìm kiếm</button> 
-    <div id="search-results"></div>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <button id="search-button">Search</button>
+    <div id="search-results"></div> 
 </div>
-{% endblock %}
-
+<link rel="stylesheet" href="{% static 'style.css' %}">
 {% block extra_js %}
 <script src="{% static 'script.js' %}"></script>
+{% endblock %}
+
+<h2>Trending Stocks</h2>
+<div class="table-container">
+    <table class="stock-table">
+        <thead>
+            <tr>
+                <th>Stock Symbol</th>
+                <th>Latest Close Price</th>
+                <th>Price Fluctuations</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trend in trending_data %}
+            <tr>
+                <td>
+                    <div class="stock-symbol" data-symbol="{{ trend.symbol }}">
+                        <span class="stock-item">{{ trend.symbol }}</span>
+                        <div class="company-name">{{ trend.company_name }}</div>
+                    </div>
+                </td>
+                <td>{{ trend.close_price }}</td>
+                <td class="price-change {% if trend.compare < 0 %}negative{% else %}positive{% endif %}">
+                    <span>{{ trend.compare }} ({{ trend.percent }}%)</span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<link rel="stylesheet" href="{% static 'trend.css' %}">
 {% endblock %}

@@ -7,8 +7,10 @@ body {
 
 .search-container {
     position: relative;
-    width: 750px;
+    width: 750px; 
     display: flex; 
+    flex-direction: row; 
+    margin-bottom: 10px; 
 }
 
 #search-box {

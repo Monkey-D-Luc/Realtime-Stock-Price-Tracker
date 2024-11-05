@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.core.cache import cache
 from yahooquery import Ticker
+import yahooquery as yq
 import json
 import pandas as pd
 import os
@@ -10,7 +11,8 @@ from datetime import datetime
 excel_path = os.path.join(settings.DATA_DIR,'TickerName.xlsx')
 df = pd.read_excel(excel_path)
 def menu(request):
-    return render(request, 'menu.html')
+    trending_data = get_trending_data()
+    return render(request, 'menu.html', {'trending_data': trending_data})
 
 def get_stock_name(symbol):
     row = df[df['Ticker'] == symbol]
@@ -24,7 +26,6 @@ def search_stock(request):
     else:
         result = []
     return JsonResponse(result, safe=False)
-
 def get_stock_data(symbol):
     cache_key = f"stock_data_{symbol}"
     cached_data = cache.get(cache_key)
@@ -44,7 +45,6 @@ def get_stock_data(symbol):
         profile.get("sector", "N/A"),
         profile.get("fullTimeEmployees", "N/A")
     ]
-    
     data = stock.history(interval="1d", period="1mo")
     data = data.reset_index() 
     mdata = pd.DataFrame(data)
@@ -61,6 +61,44 @@ def get_stock_data(symbol):
     result = (name, close_price, symbol, profile_details, compare, percent, mdata)
     cache.set(cache_key, result, 3600)
     return result
+def get_trending_data():
+    cache_key = "trending_data"
+    cached_trending_data = cache.get(cache_key)
+    if cached_trending_data:
+        return cached_trending_data
+    trending_data = yq.get_trending()
+    trending_results = []
+    if trending_data and 'quotes' in trending_data:
+        symbols = [item['symbol'] for item in trending_data['quotes'][:20]]
+        stock = yq.Ticker(symbols)  
+        data = stock.history(interval="1d", period="1mo")
+        if isinstance(data, dict) and 'symbol' in data:
+            data = pd.DataFrame(data)
+        data = data.reset_index()
+        data['date'] = data['date'].astype(str)
+        data = data[data['date'].str.len() <= 10]
+        data['date'] = pd.to_datetime(data['date'])
+        data = data.sort_values(by='date', ascending=False)
+        for symbol in symbols:
+            if symbol in data['symbol'].values:
+                stock_data = data[data['symbol'] == symbol]
+                if not stock_data.empty:
+                    latest_close = stock_data['close'].iloc[0]
+                    previous_close = stock_data['close'].iloc[1]
+                    
+                    compare = (latest_close - previous_close).round(2)
+                    percent = ((compare / previous_close) * 100).round(2)  
+                    close_price = latest_close.round(2)
+                    
+                    trending_results.append({
+                        'symbol': symbol,
+                        'close_price': close_price,
+                        'compare': compare,
+                        'percent': percent
+                    })
+        cache.set(cache_key, trending_results, 3600)
+    return trending_results
+
 
 def stock_profile(request, symbol):
     name, close_price, symbol, profile_details,compare,percent,_ = get_stock_data(symbol)

@@ -43,4 +43,10 @@ document.addEventListener('DOMContentLoaded', function () {
             window.location.href = `/${symbol}/profile/`;
         }
     });
+    document.querySelectorAll('.stock-symbol').forEach(function(element) {
+        element.addEventListener('click', function () {
+            const symbol = this.getAttribute('data-symbol'); 
+            window.location.href = `/${symbol}/profile/`;
+        });
+    });
 });

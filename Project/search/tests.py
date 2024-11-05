@@ -1,11 +1,10 @@
-from yahooquery import Ticker
-import pandas as pd
+import yahooquery as yq
 
-
-# Ví dụ sử dụng
-symbol = 'AAPL'
-year = 2024
-month = 11
-stock = Ticker(symbol)
-data = stock.history(  period="1mo", interval="1d")
-print(data)
+# Gọi phương thức get_trending để lấy dữ liệu
+trending_data = yq.get_trending()
+symbols = [item['symbol'] for item in trending_data['quotes']]
+    
+    # In ra danh sách các mã cổ phiếu
+print("Danh sách các mã cổ phiếu đang thịnh hành:")
+for symbol in symbols:
+    print(symbol)

@@ -1,0 +1,119 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.table-container {
+    border: 1px solid #626060;  
+    border-radius: 10px; 
+    overflow: hidden; 
+}
+
+.stock-table {
+    width: 100%;
+    border-collapse: collapse;  
+    background-color: #ffffff; 
+    color: #333333;  
+    font-size: 14px;
+}
+
+.stock-table th, .stock-table td {
+    padding: 10px;
+    text-align: center;
+}
+
+.stock-table th {
+    background-color: #f2f2f2;  
+    font-weight: bold;
+    color: #333333; 
+    border-bottom: 1px solid #626060; 
+}
+.price-change.positive {
+    color: #00ff00;  
+}
+
+.price-change.negative {
+    color: #ff0000;  
+}
+
+.stock-symbol {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+}
+
+.company-name {
+    font-size: 12px;
+    color: #aaaaaa; 
+}
+
+form {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label {
+    font-size: 14px;
+    margin: 0 5px;
+}
+
+select {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9; 
+    margin-right: 10px;
+    appearance: none; 
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' fill='%23666'%3E%3Cpath d='M0 2l4 4 4-4z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+    cursor: pointer;
+}
+
+.form-button {
+    background-color: #4CAF50;  
+    color: white;  
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.form-button:hover {
+    background-color: #45a049;  
+}
+
+table {
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    font-size: 14px;
+    color: #333;
+}
+
+th, td {
+    padding: 12px;
+    text-align: right;
+}
+
+th {
+    background-color: #f2f2f2; 
+    font-weight: bold;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;  
+}
+
+tr:hover {
+    background-color: #f1f1f1; 
+}
