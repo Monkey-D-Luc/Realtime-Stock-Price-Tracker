@@ -32,7 +32,7 @@
             datasets: [
                 {
                     type: 'line',  
-                    label: 'Giá đóng cửa',
+                    label: 'Close Price',
                     data: close,
                     borderColor: 'rgba(75, 192, 192, 1)',
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -42,7 +42,7 @@
                 },
                 {
                     type: 'bar',  
-                    label: 'Khối lượng giao dịch',
+                    label: 'Volume',
                     data: volume,
                     borderColor: 'rgba(255, 99, 132, 1)',
                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
@@ -56,13 +56,13 @@
                 x: {
                     title: {
                         display: true,
-                        text: 'Thời gian'
+                        text: 'Time'
                     }
                 },
                 y: {
                     title: {
                         display: true,
-                        text: 'Giá Đóng (USD)'
+                        text: 'Close Price (USD)'
                     },
                     beginAtZero: false,
                     position: 'right',
@@ -73,7 +73,7 @@
                     position: 'left',
                     title: {
                         display: true,
-                        text: 'Khối lượng'
+                        text: 'Volume'
                     },
                     beginAtZero: true,
                     suggestedMax: Math.max(...volume) * 1.2, 
